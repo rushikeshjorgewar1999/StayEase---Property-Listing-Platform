@@ -4,10 +4,9 @@
 Project Name: StayEase - Hotel Management System
 Technology Stack: Spring Boot, Spring Security, Spring Data JPA, MySQL/PostgreSQL, Redis, JWT
 
-2. Functional Requirements
+2 Core Features
 
-2.1 Core Features
-User Management
+2.1 User Management
 User registration and authentication
 Profile management
 Role-based access (Guest, Host, Admin)

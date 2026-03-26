@@ -2,6 +2,8 @@ package com.example.Learn.StayEase.controller;
 
 import com.example.Learn.StayEase.dto.UserDTO;
 import com.example.Learn.StayEase.entity.User;
+import com.example.Learn.StayEase.exceptions.UserError;
+import com.example.Learn.StayEase.exceptions.UserNotFoundException;
 import com.example.Learn.StayEase.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +32,15 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
-    public ResponseEntity<UserDTO> getProfileById(@PathVariable Long id) {
-        UserDTO userProfileById = userService.getUserProfileById(id);
-        if(userProfileById != null)
+    public ResponseEntity<?> getProfileById(@PathVariable Long id) {
+        try {
+            UserDTO userProfileById = userService.getUserProfileById(id);
             return new ResponseEntity<>(userProfileById,HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (UserNotFoundException e) {
+            UserError userError = UserError.builder().message("user not found for id : " + id).build();
+            userError.setStatus(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(userError,HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping("/add")

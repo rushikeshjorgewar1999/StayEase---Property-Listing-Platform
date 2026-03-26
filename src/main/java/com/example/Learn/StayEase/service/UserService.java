@@ -2,6 +2,7 @@ package com.example.Learn.StayEase.service;
 
 import com.example.Learn.StayEase.dto.UserDTO;
 import com.example.Learn.StayEase.entity.User;
+import com.example.Learn.StayEase.exceptions.UserNotFoundException;
 import com.example.Learn.StayEase.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,8 @@ public class UserService {
     }
 
     public UserDTO getUserProfileById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
-        if(user == null)
-            return null;
-        UserDTO map = modelMapper.map(user, UserDTO.class);
-        return map;
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return modelMapper.map(user, UserDTO.class);
     }
 
     public UserDTO saveUser(User user) {

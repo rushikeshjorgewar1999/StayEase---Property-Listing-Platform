@@ -1,6 +1,7 @@
 package com.example.Learn.StayEase.entity;
 
 
+import com.example.Learn.StayEase.constants.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -33,6 +35,8 @@ public class User {
     private String email;
     @NotBlank(message = "Password cannot be blank")
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private Long phone;
     @CreatedDate
     @Column(updatable = false)
@@ -40,6 +44,13 @@ public class User {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "user_properties",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "property_id")
+    )
+    private List<Property> properties;
 
 
 }

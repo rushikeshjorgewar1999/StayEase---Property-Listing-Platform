@@ -2,7 +2,7 @@ package com.example.Learn.StayEase.controller;
 
 import com.example.Learn.StayEase.dto.UserDTO;
 import com.example.Learn.StayEase.entity.User;
-import com.example.Learn.StayEase.exceptions.UserError;
+import com.example.Learn.StayEase.exceptions.ApiResponse;
 import com.example.Learn.StayEase.exceptions.UserNotFoundException;
 import com.example.Learn.StayEase.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,9 @@ public class UserController {
             UserDTO userProfileById = userService.getUserProfileById(id);
             return new ResponseEntity<>(userProfileById,HttpStatus.OK);
         } catch (UserNotFoundException e) {
-            UserError userError = UserError.builder().message("user not found for id : " + id).build();
-            userError.setStatus(HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(userError,HttpStatus.NOT_FOUND);
+            ApiResponse apiResponse = ApiResponse.builder().message("user not found for id : " + id).build();
+            apiResponse.setStatus(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(apiResponse,HttpStatus.NOT_FOUND);
         }
     }
 
@@ -51,5 +51,12 @@ public class UserController {
         return new ResponseEntity<>(userAdded, HttpStatus.CREATED);
     }
 
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody User user, @PathVariable Long id) {
+        UserDTO userUpdated = userService.updateUser(user,id);
+        if(userUpdated == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userUpdated, HttpStatus.OK);
+    }
 
 }

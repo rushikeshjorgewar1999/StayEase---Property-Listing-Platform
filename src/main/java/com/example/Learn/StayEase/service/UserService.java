@@ -7,7 +7,9 @@ import com.example.Learn.StayEase.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,5 +44,15 @@ public class UserService {
         UserDTO userDto = modelMapper.map(saved, UserDTO.class);
         return userDto;
     }
+
+    public UserDTO updateUser(User user,Long id) {
+        User checkUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        if (checkUser != null) {
+            User save = userRepository.save(user);
+            return modelMapper.map(save, UserDTO.class);
+        }
+        return null;
+    }
+
 
 }

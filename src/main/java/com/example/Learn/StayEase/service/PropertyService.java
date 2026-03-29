@@ -25,4 +25,21 @@ public class PropertyService {
         return propertyRepository.findAll().stream().toList();
     }
 
+    public Property getPropertyById(Long id) {
+        return propertyRepository.findById(id).orElseThrow(() -> new RuntimeException("property not found for id : " + id));
+    }
+
+    public Property updatePropertyById(Property property, Long id) {
+        Property propertyById = getPropertyById(id);
+        if(propertyById != null) {
+            property.setPropertyId(id);
+            return propertyRepository.save(property);
+        }
+        return null;
+    }
+
+    public void deletePropertyById(Long id) {
+         propertyRepository.deleteById(id);
+    }
+
 }

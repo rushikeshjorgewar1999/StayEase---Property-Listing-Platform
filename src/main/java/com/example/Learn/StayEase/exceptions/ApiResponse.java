@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Data
 @Builder
-public class UserError {
+public class ApiResponse {
 
     private String message;
     private HttpStatus status;

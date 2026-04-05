@@ -1,12 +1,15 @@
 package com.example.Learn.StayEase.controller;
 
 import com.example.Learn.StayEase.entity.Property;
+import com.example.Learn.StayEase.entity.User;
 import com.example.Learn.StayEase.exceptions.ApiResponse;
 import com.example.Learn.StayEase.service.PropertyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,6 +41,8 @@ public class PropertyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Property> getPropertyById(@PathVariable Long id) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println(user.getEmail());
         Property propertyById = propertyService.getPropertyById(id);
         if (propertyById == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

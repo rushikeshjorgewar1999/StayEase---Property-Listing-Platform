@@ -48,6 +48,10 @@ public class UserService implements UserDetailsService {
         return userDto;
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     public UserDTO updateUser(User user,Long id) {
         User checkUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         if (checkUser != null) {

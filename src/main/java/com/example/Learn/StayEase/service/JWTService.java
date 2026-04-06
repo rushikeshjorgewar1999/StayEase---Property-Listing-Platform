@@ -20,12 +20,20 @@ public class JWTService {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
         return Jwts.builder().subject(user.getUsername())
                 .claim("username", user.getUsername())
                 .claim("role", user.getRole())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public String generateRefreshToken(User user) {
+        return Jwts.builder().subject(user.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 180))
                 .signWith(getSecretKey())
                 .compact();
     }

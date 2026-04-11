@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 public class AuthDTO {
 
@@ -17,7 +19,7 @@ public class AuthDTO {
     private String email;
     @NotBlank(message = "Password cannot be blank")
     private String password;
-    private Role role;
+    private Set<Role> role;
     private Long phone;
 
 }

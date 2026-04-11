@@ -6,8 +6,11 @@ import com.example.Learn.StayEase.dto.LoginResponseDTO;
 import com.example.Learn.StayEase.dto.UserDTO;
 import com.example.Learn.StayEase.entity.User;
 import com.example.Learn.StayEase.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
 
 
@@ -28,6 +30,19 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final SessionService sessionService;
+
+    @Autowired
+    public AuthService(UserService userService, UserRepository userRepository, ModelMapper modelMapper, AuthenticationManager authenticationManager, JWTService jwtService, PasswordEncoder passwordEncoder, SessionService sessionService) {
+        this.userService = userService;
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
+        this.sessionService = sessionService;
+    }
+
 
     public UserDTO signUpUserAndSave(AuthDTO authDTO) {
 
@@ -48,11 +63,14 @@ public class AuthService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
+        sessionService.createNewSession(user, refreshToken);
+
         return new LoginResponseDTO(user.getEmail(), accessToken, refreshToken);
     }
 
     public LoginResponseDTO refresh(String refreshToken) {
         String userEmailFromToken = jwtService.getUserEmailFromToken(refreshToken);
+        sessionService.validateSession(refreshToken);
         User user = userRepository.findByEmail(userEmailFromToken).orElseThrow(() -> new RuntimeException("user not found"));
         String accessToken = jwtService.generateAccessToken(user);
         return new LoginResponseDTO(user.getEmail(), accessToken, refreshToken);

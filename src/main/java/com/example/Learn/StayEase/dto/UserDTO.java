@@ -1,6 +1,9 @@
 package com.example.Learn.StayEase.dto;
 
+import com.example.Learn.StayEase.constants.Role;
 import lombok.Data;
+
+import java.util.Set;
 
 @Data
 public class UserDTO {
@@ -11,6 +14,6 @@ public class UserDTO {
     private String lastName;
     private String email;
     private Long phone;
-    private String role;
+    private Set<Role> role;
 
 }

@@ -23,9 +23,9 @@ public class JWTService {
     public String generateAccessToken(User user) {
         return Jwts.builder().subject(user.getUsername())
                 .claim("username", user.getUsername())
-                .claim("role", user.getRole())
+                .claim("role", user.getRole().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 5))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSecretKey())
                 .compact();
     }

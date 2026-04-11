@@ -19,7 +19,7 @@ public class JWTServiceTest {
     @Test
     public void loadContext() {
         User user = new User(1L,"ranveer","singh","ranveer.singh@gmail.com","ranveer", Role.ADMIN,9238492080L, LocalDateTime.now(),LocalDateTime.now(),null);
-        String token = jwtService.generateToken(user);
+        String token = jwtService.generateAccessToken(user);
         System.out.println(token);
 
         String userEmailFromToken = jwtService.getUserEmailFromToken(token);

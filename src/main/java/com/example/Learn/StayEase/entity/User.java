@@ -1,6 +1,7 @@
 package com.example.Learn.StayEase.entity;
 
 
+import com.example.Learn.StayEase.constants.Permission;
 import com.example.Learn.StayEase.constants.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -18,8 +19,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -42,8 +45,12 @@ public class User implements UserDetails {
     private String email;
     @NotBlank(message = "Password cannot be blank")
     private String password;
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Set<Role> role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    private Set<Permission> permission;
     private Long phone;
     @CreatedDate
     @Column(updatable = false)
@@ -62,8 +69,14 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        role.forEach(r -> authorities.add(new SimpleGrantedAuthority("ROLE_" + r.name())));
+        permission.forEach(p -> authorities.add(new SimpleGrantedAuthority(p.name())));
+        return authorities;
     }
+
+
+
 
     @Override
     public String getUsername() {
